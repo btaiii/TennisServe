@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CS 50: Tennis Serve Evaluation</title>
+  <link rel='stylesheet' type='text/css' href='TennisServe.css' />
+  <script src='../lib/modernizr-latest.js'></script>
+  <script src='../lib/debugger.js'></script>
+  <script src='../lib/jquery-2.1.1.min.js'></script>
+  <script src='canvas.js'></script>
+  <script src="../lib/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href='../lib/jquery-ui-1.11.2.custom/jquery-ui.min.css'>
+  <script>
+var theCanvas;
+var context;
+
+$(function() {
+  if (!Modernizr.canvas) return;
+    canvasApp();
+});
+</script>
+</head>
+
+<body>
+<div id='main'> 
+  <div id='sidebar'>
+    <h2>Track Tennis Serve</h2>
+    <span>Image: <span id="imageNum"></span> </span>
+    <form id='controls'> 
+      <table>
+        <tr>
+          <td> <label for="offsetX">X offset:</label>
+               <input id="offsetX" name="offsetX" size='3' value='0'></td> 
+          <td> <label for="offsetY">Y offset:</label>
+               <input id="offsetY" name="offsetY" size='3' value='0'></td> 
+        </tr>
+        <tr>
+          <td> <label for="theta">&theta;:</label>
+               <input id="theta" name="theta" size='3' value='0'></td> 
+          <td>&alpha;: <span id='alpha'></span><div id='alphaSlider'></div></td>
+        </tr>
+        <caption>Controls</caption>
+      </table>
+    </form>
+  </div>
+  <canvas id='referenceImage' width='640' height='480' />
+   Your browser does not support HTML 5 Canvas. 
+  </canvas>
+  <canvas id='testImage' width='640' height='480' />
+    Your browser does not support HTML 5 Canvas.
+  </canvas>
+</div>
+</body>
+</html>

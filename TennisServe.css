@@ -1,0 +1,30 @@
+#main {
+  /*float: left;*/
+  width: 1800px;
+}
+
+#controls {
+  background-color: khaki;
+  width: 300px;
+}
+#sidebar {
+  float: left;
+  width: 300px;
+  background-color: skyblue;
+}
+
+#referenceImage {
+  background-color: #dddddd;
+  float: left;
+  margin: 10px;
+  padding: 10px;
+  width: 640px;
+  }
+
+#testImage {
+  background-color: #aaaaaa;
+  float: left;
+  margin: 10px;
+  padding: 10px;
+  width: 640px;
+  }

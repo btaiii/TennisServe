@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CS 50: Test Layout</title>
+  <link rel='stylesheet' type='text/css' href='TennisServe.css' />
+  <link href="../lib/jquery-ui-1.11.2.custom/jquery-ui.min.css" rel="stylesheet">
+</head>
+
+<body>
+<div id='main'> 
+  <div id='sidebar'>
+    <h2>Track Tennis Serve</h2>
+    <span>Image: <span id="imageNum"></span> </span>
+    <form id='controls'>
+      <input type='button' id='next' value='Next' />
+      <table>
+        <tr>
+          <td></td> 
+          <td><input type='button' id='up' class='arrow' value='Up' />
+          <td></td> 
+        <tr>
+        <tr>
+          <td><input type='button' id='left' class='arrow' value='Left' />
+          <td></td> 
+          <td><input type='button' id='right' class='arrow' value='Right' />
+        <tr>
+        <tr>
+          <td></td> 
+          <td><input type='button' id='down' class='arrow' value='Down' />
+          <td></td> 
+        <tr>
+        <caption>Controls</caption>
+      </table>
+    </form>
+  </div>
+  <canvas id='referenceImage' width='640' height='480' />
+   Your browser does not support HTML 5 Canvas. 
+  </canvas>
+  <canvas id='testImage' width='640' height='480' />
+    Your browser does not support HTML 5 Canvas.
+  </canvas>
+</div>
+<!-- Datepicker -->
+<h2 class="demoHeaders">Datepicker</h2>
+<div id="datepicker"></div>
+<input type="text" name="date" id="date">
+<script src="../lib/jquery-ui-1.11.2.custom/external/jquery/jquery.js"></script>
+<script src="../lib/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
+<script>
+$( "#datepicker" ).datepicker({
+	inline: true
+});
+$( "#date" ).datepicker();
+</script>
+</body>
+</html>
