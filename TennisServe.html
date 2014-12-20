@@ -7,8 +7,11 @@
   <script src='../lib/modernizr-latest.js'></script>
   <script src='../lib/debugger.js'></script>
   <script src='../lib/jquery-2.1.1.min.js'></script>
-  <script src='canvas.js'></script>
   <script src="../lib/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
+
+  <script src='canvas.js'></script>
+  <script src='imageAnalysis.js'></script>
+
   <link rel="stylesheet" href='../lib/jquery-ui-1.11.2.custom/jquery-ui.min.css'>
   <script>
 var theCanvas;
@@ -38,6 +41,15 @@ $(function() {
           <td> <label for="theta">&theta;:</label>
                <input id="theta" name="theta" size='3' value='0'></td> 
           <td>&alpha;: <span id='alpha'></span><div id='alphaSlider'></div></td>
+        </tr>
+        <tr><td>Error: <span id='error'></span></td></tr>
+        <tr>
+          <td>
+            <input id='automaticRegistration' type='button' value='Automatic Registration' />
+          </td>
+          <td>
+            <input id='next' type='button' value= 'Next' />
+          </td>
         </tr>
         <caption>Controls</caption>
       </table>
