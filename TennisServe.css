@@ -7,6 +7,11 @@
   background-color: khaki;
   width: 300px;
 }
+
+#controlTable th {
+  text-align: right;
+  }
+
 #sidebar {
   float: left;
   width: 300px;

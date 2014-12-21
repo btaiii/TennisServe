@@ -1,6 +1,7 @@
 /* canvasApp for TennisServe.html
 */
 function canvasApp() {
+  var testData = [ [0,0,0], [-0.7, -0.5, 0.13] ];
   initUI();
   var referenceFrame = getCanvasWithContext('#referenceImage');
   $(referenceFrame.image).load( function() {
@@ -105,6 +106,13 @@ function canvasApp() {
         $('#alpha').text(alpha);
       }
     });
+    $( "#testData" ).spinner( {
+      min: 0,
+      max: testData.length - 1,
+      stop: function( event, ui ) {
+        testRegistration(referenceFrame, testFrame);
+      }
+    } );
   }
 // http://stackoverflow.com/questions/11444401/perfecting-canvas-mouse-coordinates
   function getPosition(element) {

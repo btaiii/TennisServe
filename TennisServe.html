@@ -30,19 +30,27 @@ $(function() {
     <h2>Track Tennis Serve</h2>
     <span>Image: <span id="imageNum"></span> </span>
     <form id='controls'> 
-      <table>
+      <table id='controlTable'>
         <tr>
-          <td> <label for="offsetX">X offset:</label>
-               <input id="offsetX" name="offsetX" size='3' value='0'></td> 
-          <td> <label for="offsetY">Y offset:</label>
-               <input id="offsetY" name="offsetY" size='3' value='0'></td> 
+          <th> <label for="offsetX">X offset:</label></th>
+          <td>  <input id="offsetX" name="offsetX" size='3' value='0'></td> 
         </tr>
         <tr>
-          <td> <label for="theta">&theta;:</label>
-               <input id="theta" name="theta" size='3' value='0'></td> 
-          <td>&alpha;: <span id='alpha'></span><div id='alphaSlider'></div></td>
+          <th> <label for="offsetY">Y offset:</label></th>
+          <td> <input id="offsetY" name="offsetY" size='3' value='0'></td> 
         </tr>
-        <tr><td>Error: <span id='error'></span></td></tr>
+        <tr>
+          <th><label for="theta">&theta;:</label></th>
+          <td><input id="theta" name="theta" size='3' value='0'></td> 
+        </tr>
+        <tr>
+          <th>&alpha;:</th>
+          <td> <span id='alpha'></span><div id='alphaSlider'></div></td>
+        </tr>
+        <tr>
+           <th>Error: </th>
+           <td><span id='error'></span></td>
+        </tr>
         <tr>
           <td>
             <input id='automaticRegistration' type='button' value='Automatic Registration' />
@@ -50,6 +58,14 @@ $(function() {
           <td>
             <input id='next' type='button' value= 'Next' />
           </td>
+        </tr>
+        <tr>
+          <th><label for="testData">Test Data:</label></th>
+          <td><input id='testData' name='testData' size='2' value='0'></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><span id='testData'>[]</span></td>
         </tr>
         <caption>Controls</caption>
       </table>
