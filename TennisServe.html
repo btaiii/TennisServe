@@ -23,7 +23,6 @@ $(function() {
 });
 </script>
 </head>
-
 <body>
 <div id='main'> 
   <div id='sidebar'>
@@ -65,16 +64,28 @@ $(function() {
         </tr>
         <tr>
           <td></td>
-          <td><span id='testData'>[]</span></td>
+          <td><span id='showTestData'>[]</span></td>
         </tr>
+        <tr>
+          <td><input id='showMask' type='button' value='Show Mask' /></td>
+          <td></td>
+        <tr>
+          <th><label for='maskThreshold'>Mask threshold:</label></th>
+          <td><input id='maskThreshold' name='maskThreshold' size='3' value='156'></td>
+        </tr>
+        <tr>
+          <td><input id='identifyBall' type='button' value='Identify Ball' /></td>
+          <td></td>
+        <tr>
+   
         <caption>Controls</caption>
       </table>
     </form>
   </div>
-  <canvas id='referenceImage' width='640' height='480' />
+  <canvas id='referenceImage' width='640' height='480' >
    Your browser does not support HTML 5 Canvas. 
   </canvas>
-  <canvas id='testImage' width='640' height='480' />
+  <canvas id='testImage' width='640' height='480' >
     Your browser does not support HTML 5 Canvas.
   </canvas>
 </div>

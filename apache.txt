@@ -1,0 +1,6 @@
+ # http://coolestguidesontheplanet.com/get-apache-mysql-php-phpmyadmin-working-osx-10-10-yosemite/
+ Apache:
+   already installed with Mac OSX Yosemite
+ 
+ to start:  sudo apachectl start
+ version: httpd -v

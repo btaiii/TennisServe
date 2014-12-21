@@ -1,27 +1,36 @@
 /* canvasApp for TennisServe.html
 */
+var DEBUG = false;
+var testData = [ [0,0,0], [-0.7, 1.1, 0.13], [-0.7, -0.5, 0.13] ];
+var referenceFrame;
+var testFrame;
+var WIDTH;
+var HEIGHT;
+
 function canvasApp() {
-  var testData = [ [0,0,0], [-0.7, -0.5, 0.13] ];
   initUI();
-  var referenceFrame = getCanvasWithContext('#referenceImage');
+  referenceFrame = getCanvasWithContext('#referenceImage');
+  testFrame = getCanvasWithContext('#testImage');
+  WIDTH = referenceFrame.canvas.width;
+  HEIGHT = referenceFrame.canvas.height;
+  
   $(referenceFrame.image).load( function() {
     imageToContext(referenceFrame);
     referenceFrame.imageData =
-      referenceFrame.context.getImageData(0, 0, referenceFrame.canvas.width, referenceFrame.canvas.height);
+      referenceFrame.context.getImageData(0, 0, WIDTH, HEIGHT);
   });
   imageSrc(referenceFrame, 1);
 
-  var testFrame = getCanvasWithContext('#testImage');
   $(testFrame.image).load( function() {
     imageToContext(testFrame);
   });
   imageSrc(testFrame, 4);
+  testFrame.context.createImageData(WIDTH, HEIGHT);
   $('#imageNum').text(testFrame.image.src);
+
   var jpgNum = /(\d)(\.jpg)/
   $('#next').click( nextImage );
-  $('#automaticRegistration').click( function() {
-    automaticRegistration(referenceFrame, testFrame);
-  } );
+  $('#automaticRegistration').click( automaticRegistration );
 
   //var imageData = context.createImageData(32,32); // space for 32x32 map
 
@@ -35,8 +44,8 @@ function canvasApp() {
     var image = new Image();
     // storage for manipulating image in memory
     var memoryCanvas = document.createElement('canvas');
-    memoryCanvas.width = canvas.width;
-    memoryCanvas.height = canvas.height;
+    memoryCanvas.width = WIDTH;
+    memoryCanvas.height = HEIGHT;
     var memoryContext = memoryCanvas.getContext('2d');
     memoryContext.resetTransform = function() {
       this.setTransform(1,0,0,1,0,0);
@@ -69,16 +78,14 @@ function canvasApp() {
   }
 
   function initUI() {
-    var MAX_OFFSET = 2;
+    var MAX_OFFSET = 4;
     var STEP = 0.1;
     $( "#offsetX" ).spinner( {
       min: -MAX_OFFSET,
       max: MAX_OFFSET,
       step: STEP,
     // 'change' event only fired after ENTER key pressed; use 'stop' event
-      stop: function( event, ui ) {
-          manualRegistration(referenceFrame, testFrame);
-      }
+      stop: function( event, ui ) { manualRegistration }
     } );
     $( "#offsetY" ).spinner( {
       min: -MAX_OFFSET,
@@ -93,7 +100,7 @@ function canvasApp() {
       max: MAX_OFFSET,
       step: 0.01,
       stop: function( event, ui ) {
-        manualRegistration(referenceFrame, testFrame);
+        manualRegistration();
       }
     } );
     $('#alphaSlider').slider( {
@@ -110,8 +117,16 @@ function canvasApp() {
       min: 0,
       max: testData.length - 1,
       stop: function( event, ui ) {
-        testRegistration(referenceFrame, testFrame);
+        testRegistration();
       }
+    } );
+    $( "input[type=button]" ).button();
+    $('#maskThreshold').spinner( {
+      min: 127,
+      max: 255 
+    } );
+    $('#showMask').click( function() {
+      showMask();
     } );
   }
 // http://stackoverflow.com/questions/11444401/perfecting-canvas-mouse-coordinates
