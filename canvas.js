@@ -1,31 +1,41 @@
 /* canvasApp for TennisServe.html
 */
-var DEBUG = false;
-var testData = [ [0,0,0], [-0.7, 1.1, 0.13], [-0.7, -0.5, 0.13] ];
+var DEBUG = true;
+//                1           2               3(4.513)                  4(5.024)
+var testData = [ [0,0,0], [0.9, -1.7, 0.05], [0.5, -0.9, 0.06], [-0.3, 0.8, 0.15] ];
 var referenceFrame;
 var testFrame;
 var WIDTH;
 var HEIGHT;
+var memoryCanvas;
+var memoryContext;
 
 function canvasApp() {
-  initUI();
   referenceFrame = getCanvasWithContext('#referenceImage');
   testFrame = getCanvasWithContext('#testImage');
   WIDTH = referenceFrame.canvas.width;
   HEIGHT = referenceFrame.canvas.height;
+    // storage for manipulating image in memory
+  memoryCanvas = document.createElement('canvas');
+  memoryCanvas.width = WIDTH;
+  memoryCanvas.height = HEIGHT;
+  memoryContext = memoryCanvas.getContext('2d');
+  memoryContext.resetTransform = function() {
+      this.setTransform(1,0,0,1,0,0);
+  }
+  initUI();
   
   $(referenceFrame.image).load( function() {
-    imageToContext(referenceFrame);
+    referenceFrame.context.drawImage(referenceFrame.image, 0,0);
     referenceFrame.imageData =
       referenceFrame.context.getImageData(0, 0, WIDTH, HEIGHT);
   });
   imageSrc(referenceFrame, 1);
 
   $(testFrame.image).load( function() {
-    imageToContext(testFrame);
+    testFrame.context.drawImage(testFrame.image, 0, 0);
   });
   imageSrc(testFrame, 4);
-  testFrame.context.createImageData(WIDTH, HEIGHT);
   $('#imageNum').text(testFrame.image.src);
 
   var jpgNum = /(\d)(\.jpg)/
@@ -42,35 +52,20 @@ function canvasApp() {
     }
 
     var image = new Image();
-    // storage for manipulating image in memory
-    var memoryCanvas = document.createElement('canvas');
-    memoryCanvas.width = WIDTH;
-    memoryCanvas.height = HEIGHT;
-    var memoryContext = memoryCanvas.getContext('2d');
-    memoryContext.resetTransform = function() {
-      this.setTransform(1,0,0,1,0,0);
-    }
 
     return {
       canvas: canvas,
       context: context,
-      memoryCanvas: memoryCanvas,
-      memoryContext: memoryContext,
       image: image
     }
   }
     
-  function imageToContext(frame) {
-    var offsetX = $('#offsetX').spinner('value');
-    var offsetY = $('#offsetY').spinner('value');
-    frame.context.drawImage(frame.image, offsetX, offsetY);
-  }
-
   function nextImage() {
     var match = jpgNum.exec(testFrame.image.src);
     digit = +match[1];
     if (++digit > 4) digit = 1;
     imageSrc(testFrame, digit); 
+    $('#imageNum').text(testFrame.image.src);
   }
 
   function imageSrc(frame, digit) {
@@ -85,15 +80,13 @@ function canvasApp() {
       max: MAX_OFFSET,
       step: STEP,
     // 'change' event only fired after ENTER key pressed; use 'stop' event
-      stop: function( event, ui ) { manualRegistration }
+      stop: function( event, ui ) { manualRegistration(); }
     } );
     $( "#offsetY" ).spinner( {
       min: -MAX_OFFSET,
       max: MAX_OFFSET,
       step: STEP,
-      stop: function( event, ui ) {
-        manualRegistration(referenceFrame, testFrame);
-      }
+      stop: function( event, ui ) { manualRegistration(); }
     } );
     $( "#theta" ).spinner( {
       min: -MAX_OFFSET,
@@ -128,20 +121,5 @@ function canvasApp() {
     $('#showMask').click( function() {
       showMask();
     } );
-  }
-// http://stackoverflow.com/questions/11444401/perfecting-canvas-mouse-coordinates
-  function getPosition(element) {
-      var _x = element.offsetLeft;
-      var _y = element.offsetTop;
-  
-      while(element = element.offsetParent) {
-          _x += element.offsetLeft - element.scrollLeft;
-          _y += element.offsetTop - element.scrollTop;
-      }
-  
-      return {
-          X : _x,
-          Y : _y
-      }
   }
 }

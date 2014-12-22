@@ -1,7 +1,9 @@
   function testRegistration() {
     var testIndex = $('#testData').spinner('value');
     var thisTest = testData[testIndex];
-    $('#showTestData').text(thisTest);
+    $('#offsetX').spinner('value', thisTest[0]);
+    $('#offsetY').spinner('value', thisTest[1]);
+    $('#theta').spinner('value', thisTest[2]);
     manualRegistration(thisTest);
   }
   function automaticRegistration() {
@@ -21,8 +23,8 @@
 
     for (var iteration = 1; iteration < MAX_ITERATIONS; iteration++) {
       var offsetXold = offsetX;
-      var subtractionX = performSubtraction(referenceFrame, testFrame, offsetX, offsetY, theta);
-      var subtractionXdX = performSubtraction(referenceFrame, testFrame, offsetX+deltaX, offsetY, theta);
+      var subtractionX = performSubtraction(offsetX, offsetY, theta);
+      var subtractionXdX = performSubtraction(offsetX+deltaX, offsetY, theta);
       var errorPrime = (subtractionXdX.error - subtractionX.error) / deltaX;
       var change = eps * errorPrime;
       offsetX = offsetXold - change;
@@ -37,7 +39,7 @@
     var offsetList = [];
     var errorList = [];
     for (var offsetX = -3.5; offsetX <= 1.5; offsetX+=0.1) {
-        var subtraction = performSubtraction(referenceFrame, testFrame, offsetX, offsetY, theta);
+        var subtraction = performSubtraction(offsetX, offsetY, theta);
         offsetList.push(offsetX.toFixed(2));
         errorList.push(subtraction.error);
     }
@@ -49,7 +51,7 @@
     var offsetX = $('#offsetX').spinner('value');
     var offsetY = $('#offsetY').spinner('value');
     var theta = $('#theta').spinner('value');
-    var subtraction = performSubtraction(referenceFrame, testFrame, offsetX, offsetY, theta);
+    var subtraction = performSubtraction(offsetX, offsetY, theta);
     var subtractionData = subtraction.data.data;
     var length = subtractionData.length;
     var threshold = $('#maskThreshold').spinner('value');
@@ -87,13 +89,22 @@ Good values for Serve-4.jpg: (offsetX, offsetY, theta) = (-0.7, -0.5, 0.13)
 
   function performSubtraction(offsetX, offsetY, theta) {
     var referenceData = referenceFrame.imageData;
+  
+  memoryCanvas = document.createElement('canvas');
+  memoryCanvas.width = WIDTH;
+  memoryCanvas.height = HEIGHT;
+  memoryContext = memoryCanvas.getContext('2d');
+  memoryContext.resetTransform = function() {
+      this.setTransform(1,0,0,1,0,0);
+  }
     
-    testFrame.memoryContext.resetTransform();
-    testFrame.memoryContext.clearRect(0, 0, WIDTH, HEIGHT);
-    testFrame.memoryContext.translate(offsetX, offsetY);
-    testFrame.memoryContext.rotate(theta * Math.PI / 180.0);
-    testFrame.memoryContext.drawImage(testFrame.image, 0, 0 );
-    var testData = testFrame.memoryContext.getImageData(0, 0, WIDTH, HEIGHT);
+    memoryContext.resetTransform();
+    memoryContext.fillSTyle = 'black';
+    memoryContext.clearRect(0, 0, WIDTH, HEIGHT);
+    memoryContext.translate(offsetX, offsetY);
+    memoryContext.rotate(theta * Math.PI / 180.0);
+    memoryContext.drawImage(testFrame.image, 0, 0 );
+    var testData = memoryContext.getImageData(0, 0, WIDTH, HEIGHT);
     
     var refString = '';
     var testString = '';
