@@ -108,8 +108,8 @@ function canvasApp() {
       }
     });
     $( "#testData" ).spinner( {
-      min: 0,
-      max: testData.length - 1,
+      min: 1,
+      max: testData.length,
       stop: function( event, ui ) {
         testRegistration();
       }
@@ -138,6 +138,17 @@ function canvasApp() {
           var pixel = globList[i].data[j];
           var index = (pixel.row * WIDTH + pixel.col)<<2;
           subtractionData[index] = subtractionData[index+2] = 255;
+        }
+      }
+
+      for (var i = 0; i < globList.length; i++) {
+        globList[i].testMask();
+        console.log('i, maskScore, Glob: ', i, ' ', globList[i].maskScore, ' ', globList[i]);
+        if (globList[i].maskScore > 10) continue;
+        for (var j = 0; j < globList[i].data.length; j++ ) {
+          var pixel = globList[i].data[j];
+          var index = (pixel.row * WIDTH + pixel.col)<<2;
+          subtractionData[index+1] = 255;
         }
       }
       testFrame.context.putImageData(subtraction.data, 0, 0);

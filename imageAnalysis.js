@@ -1,6 +1,6 @@
   function testRegistration() {
     var testIndex = $('#testData').spinner('value');
-    var thisTest = testData[testIndex];
+    var thisTest = testData[testIndex-1];
     $('#offsetX').spinner('value', thisTest[0]);
     $('#offsetY').spinner('value', thisTest[1]);
     $('#theta').spinner('value', thisTest[2]);

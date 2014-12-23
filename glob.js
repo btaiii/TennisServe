@@ -1,6 +1,11 @@
+square = function(x) {
+  return x*x;
+}
 var MINIMUM_GLOB_SIZE = 6;
 var MAXIMUM_GLOB_ASPECT_RATIO = 2.0;
-var MASK_RADIUS = 50; 
+var MASK_RADIUS = 30; 
+var MASK_DIAMETER = 2 * MASK_RADIUS;
+var MASK_RADIUS_2 = square(MASK_RADIUS);
 var MASK_FAIL = -1;
 
 function testMaskOnList(globList) {
@@ -38,6 +43,13 @@ function Point(row, col) {
   this.col = col
 }
 
+// return square of distance between two points
+Point.prototype.distance_squared = function(other) {
+  var deltaRow = this.row - other.row;
+  var deltaCol = this.col - other.col;
+  return (deltaRow<<1) + (deltaCol<<1);
+}
+
 Point.prototype.adjacent = function(other) {
   return Math.abs(this.row - other.row) + Math.abs(this.col - other.col) < 2;
 }
@@ -48,27 +60,49 @@ function Glob(row, col) {
   this.minRow = row,
   this.maxRow = row,
   this.minCol = col,
-  this.maxCol = col
+  this.maxCol = col,
+  this.isCandidate = true,
+  this.maskScore = 0
 }
 
 Glob.prototype.testMask = function() {
-   var width = this.maxCol - this.minCol + 1;
-   var height = this.maxRow - this.minRow + 1;
-   var aspectRatio = Math.max(width, height) / Math.min(width,height);
-   if ( aspectRatio > MAXIMUM_GLOB_ASPECT_RATIO ) return MASK_FAIL;
+  this.maskScore = 1000;
+  this.isCandidate = false;
+  var width = this.maxCol - this.minCol + 1;
+  var height = this.maxRow - this.minRow + 1;
+  var majorAxis = Math.max(width, height);
+  var minorAxis = Math.min(width, height);
+  var aspectRatio = majorAxis / minorAxis;
+  if ( aspectRatio > MAXIMUM_GLOB_ASPECT_RATIO ) return;
+  var targetRadius_2 = majorAxis * majorAxis / 4.0;
+  var targetArea = Math.PI * targetRadius_2;
+  if ( this.length < 0.75 * targetArea ) return;
 
-   var globCenterRow = Math.round( (this.minRow + this.maxRow) / 2.0 );
-   var globCenterCol = Math.round( (this.minCol + this.maxCol) / 2.0 );
-   var startRow = this.minRow - Math.round(MASK_RADIUS/2);
-   var startCol = this.minCol - Math.round(MASK_RADIUS/2);
+  var globCenterRow = Math.round( (this.minRow + this.maxRow) / 2.0 );
+  var globCenterCol = Math.round( (this.minCol + this.maxCol) / 2.0 );
 
-   // is mask within canvas boundaries?
-   if (startRow < 0 || startCol < 0) return MASK_FAIL;
-   if (startRow + height > HEIGHT || startCol + width > WIDTH) return MASK_FAIL;
-   for (var row = startRow; row < startRow + height; row++) {
-     for (var col = startCol; col < startCol + width; col++) {
-     }
-   }
+  var startRow = globCenterRow - MASK_RADIUS;
+  var startCol = globCenterCol - MASK_RADIUS;
+
+  // is mask within canvas boundaries?
+  if (startRow < 0 || startCol < 0) return;
+  if (startRow + height > HEIGHT || startCol + width > WIDTH) return;
+  // test how many pixels are set within the annulus
+  var subtractionData = subtraction.data.data;
+  var score = 0;
+  for (var row = startRow; row < startRow + MASK_DIAMETER; row++) {
+    var deltaRow_2 = square(row - globCenterRow);
+    for (var col = startCol; col < startCol + MASK_DIAMETER; col++) {
+      var deltaCol_2 = square(col - globCenterCol);
+      var radius_2 = deltaRow_2 + deltaCol_2;
+      if (radius_2 > MASK_RADIUS_2 || radius_2 <= targetRadius_2) continue;
+      var index = (row * WIDTH + col)<<2;
+      //subtractionData[index+1] = 255;
+      if (subtractionData[index]) score++;
+    }
+  }
+  this.maskScore = score;
+  if (score == 0) this.isCandidate = true;
 }
 
 // add an array of [row, col] values to the glob ... for testing purposes only
@@ -100,6 +134,7 @@ Glob.prototype.merge = function(other) {
   this.length += other.length;
   this.data = this.data.concat(other.data);
 }
+
 /*
 x = new Glob(3,5);
 y = new Glob(3,6);
