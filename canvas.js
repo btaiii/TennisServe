@@ -9,6 +9,7 @@ var WIDTH;
 var HEIGHT;
 var memoryCanvas;
 var memoryContext;
+var subtraction;
 
 function canvasApp() {
   referenceFrame = getCanvasWithContext('#referenceImage');
@@ -118,8 +119,28 @@ function canvasApp() {
       min: 127,
       max: 255 
     } );
-    $('#showMask').click( function() {
-      showMask();
+    $('#showMask').click( showMask );
+    $('#showCandidateGlobs').click( function() {
+      var globList = showMask();
+      mergeGlobList(globList);
+      globList = filterGlobList(globList);
+      $('#candidateCount').text(globList.length);
+
+      // initialize to opaque black
+      var subtractionData = subtraction.data.data;
+      var length = subtractionData.length;
+      for (var i = 0; i < length; i++) 
+        subtractionData[i] = ((i+1) % 4 == 0) ? 255 : 0;
+
+      // color the candidates and display them
+      for (var i = 0; i < globList.length; i++) {
+        for (var j = 0; j < globList[i].data.length; j++ ) {
+          var pixel = globList[i].data[j];
+          var index = (pixel.row * WIDTH + pixel.col)<<2;
+          subtractionData[index] = subtractionData[index+2] = 255;
+        }
+      }
+      testFrame.context.putImageData(subtraction.data, 0, 0);
     } );
   }
 }

@@ -11,6 +11,7 @@
 
   <script src='canvas.js'></script>
   <script src='imageAnalysis.js'></script>
+  <script src='glob.js'></script>
 
   <link rel="stylesheet" href='../lib/jquery-ui-1.11.2.custom/jquery-ui.min.css'>
   <script>
@@ -43,10 +44,6 @@ $(function() {
           <td><input id="theta" name="theta" size='3' value='0'></td> 
         </tr>
         <tr>
-          <th>&alpha;:</th>
-          <td> <span id='alpha'></span><div id='alphaSlider'></div></td>
-        </tr>
-        <tr>
            <th>Error: </th>
            <td><span id='error'></span></td>
         </tr>
@@ -69,6 +66,9 @@ $(function() {
           <th><label for='maskThreshold'>Mask threshold:</label></th>
           <td><input id='maskThreshold' name='maskThreshold' size='3' value='156'></td>
         </tr>
+        <tr>
+          <td><input id='showCandidateGlobs' type='button' value='Show Candidates' /></td>
+          <td><span id='candidateCount'></span></td>
         <tr>
           <td><input id='identifyBall' type='button' value='Identify Ball' /></td>
           <td></td>

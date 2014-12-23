@@ -51,18 +51,25 @@
     var offsetX = $('#offsetX').spinner('value');
     var offsetY = $('#offsetY').spinner('value');
     var theta = $('#theta').spinner('value');
-    var subtraction = performSubtraction(offsetX, offsetY, theta);
+    subtraction = performSubtraction(offsetX, offsetY, theta);
     var subtractionData = subtraction.data.data;
     var length = subtractionData.length;
     var threshold = $('#maskThreshold').spinner('value');
+    var globList = [];
     for (var i = 0; i < length; i+=4) {
-      subtractionData[i+2] = 
-        (-subtractionData[i] + subtractionData[i+1] + subtractionData[i+2] > threshold) ?
-        255 : 0;
-      subtractionData[i] = subtractionData[i+1] = 0;
-      subtractionData[i+3] = 127;
+      if (subtractionData[i] + subtractionData[i+1] - subtractionData[i+2] > threshold) {
+        subtractionData[i] = subtractionData[i+1] = 255;
+        var row = Math.trunc((i>>2) / WIDTH);
+        var col = (i>>2) % WIDTH;
+        globList.push( new Glob(row, col) );
+      } else {
+        subtractionData[i] = subtractionData[i+1] = 0;
+      }
+      subtractionData[i+2] = 0;
+      subtractionData[i+3] = 255;
     }
     testFrame.context.putImageData(subtraction.data, 0, 0);
+    return globList; 
   }
 
 /* subtract images using spinner parameters, and refresh image on screen,
