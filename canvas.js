@@ -10,6 +10,7 @@ var HEIGHT;
 var memoryCanvas;
 var memoryContext;
 var subtraction;
+var ballGlob;
 
 function canvasApp() {
   referenceFrame = getCanvasWithContext('#referenceImage');
@@ -121,6 +122,7 @@ function canvasApp() {
     } );
     $('#showMask').click( showMask );
     $('#showCandidateGlobs').click( function() {
+      ballGlob = undefined;
       var globList = showMask();
       mergeGlobList(globList);
       globList = filterGlobList(globList);
@@ -145,6 +147,7 @@ function canvasApp() {
         globList[i].testMask();
         console.log('i, maskScore, Glob: ', i, ' ', globList[i].maskScore, ' ', globList[i]);
         if (globList[i].maskScore > 10) continue;
+        ballGlob = globList[i];
         for (var j = 0; j < globList[i].data.length; j++ ) {
           var pixel = globList[i].data[j];
           var index = (pixel.row * WIDTH + pixel.col)<<2;
@@ -153,5 +156,20 @@ function canvasApp() {
       }
       testFrame.context.putImageData(subtraction.data, 0, 0);
     } );
+  }
+
+  $('#identifyBall').click( function() {
+      identifyBall();
+  } );
+
+  function identifyBall() {
+    if (!ballGlob) return;
+    var x = (ballGlob.minCol + ballGlob.maxCol) / 2.0;
+    var y = (ballGlob.minRow + ballGlob.maxRow) / 2.0;
+    testFrame.context.beginPath();
+    testFrame.context.strokeStyle = '#ffff00';
+    testFrame.context.lineWidth = 2;
+    testFrame.context.arc(x, y, 40, 0, 2 * Math.PI);
+    testFrame.context.stroke();
   }
 }
